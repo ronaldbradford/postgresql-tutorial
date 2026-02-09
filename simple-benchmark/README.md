@@ -3,7 +3,7 @@
 ## Pre-requisites
 - Docker (or compatible product, e.g. Rancher)
 - Docker Compose
-- psql client
+- `psql` client
 
 ## Launch
 ```
@@ -19,6 +19,8 @@ psql "postgresql://${DB_USER}:${DB_PASSWD}@localhost:${DB_PORT}/${DB_NAME}" -c "
 ```
 
 ## Benchmark (4 Threads)
+
+This tutorial demonstrates benchmarking via [sysbench](https://github.com/akopytov/sysbench), an open-source, multi-threaded, and modular benchmarking tool used to evaluate system performance.
 ```
 TIME=10 ./benchmark.sh prepare
 TIME=10 ./benchmark.sh run
@@ -89,6 +91,7 @@ Threads fairness:
 ```
 
 ### Benchmark (20 Threads)
+
 ```
 THREADS=20 TIME=10 ./benchmark.sh run
 ```
@@ -130,6 +133,9 @@ This benchmark will fail, as expected and is the purpose of subsequent tutorials
 
 ```
 $ THREADS=25 TIME=10 ./benchmark.sh run
+```
+
+```
 Running benchmark: oltp_read_write
 Threads: 25, Time: 10s, Tables: 10, Rows/table: 10000
 sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
@@ -162,10 +168,13 @@ FATAL: Thread initialization failed!
 
 ## Monitoring
 
-In a separate thread when running the benchmark you can monitor database activity with:
+In a separate thread when running the `sysbench` benchmark you can monitor database activity with the following monitoring script:
 
 ```
 $ ./monitor.sh
+```
+
+```
 Monitoring PostgreSQL for 60 seconds (polling every 2s)
 Time                 | Total Conn | Active | Idle | Idle in Txn | Active Queries
 ------------------------------------------------------------------------------------
@@ -178,7 +187,7 @@ Time                 | Total Conn | Active | Idle | Idle in Txn | Active Queries
 2026-02-06 13:16:14 |          1 |      1 |    0 |           0 |              0
 ```
 
-Note that in the `THREADS=20 TIME=10 ./benchmark.sh run` test, monitoring will produce the following error which is a separate subsequent discussion for separate pool management.
+Note that in the `THREADS=20 TIME=10 ./benchmark.sh run` test in which the benchmark will succeed, monitoring will produce the following error which is a separate subsequent discussion for separate pool management.
 
 ```
 $ ./monitor.sh
