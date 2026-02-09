@@ -6,27 +6,35 @@
 - `psql` client
 
 ## Launch
+
+We launch a stock PostgreSQL container and a second container that is running `sysbench`.
+
 ```
+source .envrc           # Or use direnv
 docker compose up -d
 ```
 
 ## Validate
+
+Verify the containers start and there are no errors.
 ```
 docker compose ps
 docker compose logs
-source .envrc # Or use direnv
+source .envrc           # Or use direnv
 psql "postgresql://${DB_USER}:${DB_PASSWD}@localhost:${DB_PORT}/${DB_NAME}" -c "SELECT version();"
 ```
 
 ## Benchmark (4 Threads)
 
 This tutorial demonstrates benchmarking via [sysbench](https://github.com/akopytov/sysbench), an open-source, multi-threaded, and modular benchmarking tool used to evaluate system performance.
+
+There is a one-off prepare stage that will pre-populate the database with necessary data to perform the test.
 ```
 TIME=10 ./benchmark.sh prepare
 TIME=10 ./benchmark.sh run
 ```
 
-You will see results like
+You will see results like:
 ```
 SQL statistics:
     queries performed:

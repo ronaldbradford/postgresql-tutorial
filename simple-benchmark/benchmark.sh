@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-
+set -o pipefail
 set -e
+
+[[ -n "${TRACE}" ]] && set -x
+
+# Source the environment variables for this setup
+. .envrc
 
 # Default values
 TABLES=${TABLES:-10}
@@ -11,7 +16,7 @@ REPORT_INTERVAL=${REPORT_INTERVAL:-1}
 TEST_TYPE=${TEST_TYPE:-oltp_read_write}
 
 # Base sysbench command
-SYSBENCH_CMD="docker compose exec sysbench sysbench \
+SYSBENCH_CMD="docker compose exec ${SYSBENCH_CONTAINER_NAME} sysbench \
   --db-driver=pgsql \
   --pgsql-host=${DB_CONTAINER_NAME} \
   --pgsql-port=${DB_PORT} \
