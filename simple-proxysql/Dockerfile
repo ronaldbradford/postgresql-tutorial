@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM arm64v8/ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -7,19 +7,17 @@ RUN apt-get update && \
     sysbench \
     postgresql-client \
     curl \
-    wget \
-    lsb-release \
-    gnupg2 \
     supervisor \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install ProxySQL 3.0.5
-RUN wget -q https://github.com/sysown/proxysql/releases/download/v3.0.5/proxysql_3.0.5-ubuntu22_amd64.deb && \
-    dpkg -i proxysql_3.0.5-ubuntu22_amd64.deb || true && \
+# Install ProxySQL from official repository
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends lsb-release wget apt-transport-https ca-certificates gnupg && \
+    wget -O - 'https://repo.proxysql.com/ProxySQL/proxysql-3.0.x/repo_pub_key' | apt-key add - && \
+    echo "deb https://repo.proxysql.com/ProxySQL/proxysql-3.0.x/$(lsb_release -sc)/ ./" | tee /etc/apt/sources.list.d/proxysql.list && \
     apt-get update && \
-    apt-get install -y -f && \
-    rm proxysql_3.0.5-ubuntu22_amd64.deb && \
+    apt-get install -y proxysql && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

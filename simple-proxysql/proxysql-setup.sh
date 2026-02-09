@@ -12,12 +12,12 @@ docker compose exec -d ${PROXYSQL_CONTAINER_NAME} proxysql --version
 
 echo "Configuring ProxySQL..."
 
-docker compose exec -d ${PROXYSQL_CONTAINER_NAME} psql postgresql://admin:admin@${PROXY_DB_HOST}:${PROXY_ADMIN_PORT}/${DB_NAME} << EOF
+docker exec ${PROXYSQL_CONTAINER_NAME} psql postgresql://admin:admin@${PROXY_DB_HOST}:${PROXY_ADMIN_PORT}/${DB_NAME} << EOF
 
 -- Add PostgreSQL backend server
 DELETE FROM pgsql_servers;
 INSERT INTO pgsql_servers (hostgroup_id, hostname, port, max_connections)
-VALUES (0, '${DB_CONTAINER_NAME}', ${DB_PORT}, 1000);
+VALUES (0, '${DB_CONTAINER_NAME}', ${DB_PORT}, 15);
 
 -- Add user for sysbench
 DELETE FROM pgsql_users;

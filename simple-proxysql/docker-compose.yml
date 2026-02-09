@@ -6,6 +6,11 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWD}
       POSTGRES_DB: ${DB_NAME}
+    command: >
+      postgres
+      -c max_connections=20
+      -c shared_buffers=256MB
+      -c work_mem=4MB
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
@@ -17,10 +22,7 @@ services:
       retries: 5
 
   sysbench-proxysql:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    platform: linux/amd64
+    build: .
     container_name: sysbench-proxysql
     depends_on:
       postgresql18:
