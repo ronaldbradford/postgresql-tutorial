@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
+set -o pipefail
 set -e
+[[ -n "${TRACE}" ]] && set -x
 
 INTERVAL=${INTERVAL:-2}
 DURATION=${DURATION:-60}

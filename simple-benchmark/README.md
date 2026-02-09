@@ -64,6 +64,8 @@ Threads fairness:
 ```
 
 ### Benchmark (10 Threads)
+
+This will run the benchmark with 10 threads.
 ```
 THREADS=10 TIME=10 ./benchmark.sh run
 ```
@@ -100,6 +102,7 @@ Threads fairness:
 
 ### Benchmark (20 Threads)
 
+This will run the benchmark with 20 threads.
 ```
 THREADS=20 TIME=10 ./benchmark.sh run
 ```
@@ -137,7 +140,7 @@ Threads fairness:
 
 ### Benchmark (25 Threads)
 
-This benchmark will fail, as expected and is the purpose of subsequent tutorials.
+This benchmark will fail as the number of threads exceeds the maximum connections to the database, as expected and is the purpose of subsequent tutorials.
 
 ```
 $ THREADS=25 TIME=10 ./benchmark.sh run
