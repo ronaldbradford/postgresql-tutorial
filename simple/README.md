@@ -3,35 +3,53 @@
 ## Pre-requisites
 - Docker (or compatible product, e.g. Rancher)
 - Docker Compose
-- psql client
+- `psql` client
 
 
 ## Launch
+
+We launch a stock PostgreSQL container.
+
 ```
+source .envrc           # Or use direnv
 docker compose up -d
 ```
 
 ## Validate
+
+Verify the container starts and there are no errors.
 ```
 docker compose ps
 docker compose logs
 ```
 
 ## Test
+
+We can connect directly to the container using the default PostgreSQL port `5432` that is exposed to the host.
+
 ```
-source .envrc # Or use direnv
+source .envrc           # Or use direnv
 psql "postgresql://${DB_USER}:${DB_PASSWD}@localhost:${DB_PORT}/${DB_NAME}" -c "SELECT version();"
 psql "postgresql://${DB_USER}:${DB_PASSWD}@localhost:${DB_PORT}/${DB_NAME}" -t -c "SHOW server_version;"
 ```
 
+We can connect to PostgreSQL directly from the container if `psql` is not installed locally.
+```
+docker exec -it ${DB_CONTAINER_NAME} psql -U ${DB_USER} -d ${DB_NAME} -c "SELECT version();"
+```
+
 ## Teardown
+
+The following will delete all containers resources.
+
 ```
 docker compose down -v
 ```
 
 ## Debugging
-```
 
+The following are example of the output you should expect when running this tutorial.
+```
 $ docker compose up -d
 [+] Running 3/3
  ✔ Network simple_default                  Created                                                                                                                              0.0s
