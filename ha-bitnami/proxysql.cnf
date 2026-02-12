@@ -1,0 +1,47 @@
+datadir="/var/lib/proxysql"
+
+admin_variables=
+{
+    admin_credentials="admin:admin;radmin:radmin"
+    pgsql_ifaces="0.0.0.0:6132"
+}
+
+pgsql_variables=
+{
+    interfaces="0.0.0.0:6133"
+    monitor_username="proxymon"
+    monitor_password="proxymon"
+    monitor_enabled=true
+    ping_interval_server_msec=5000
+    ping_timeout_server=1000
+}
+
+pgsql_servers=
+(
+    { hostgroup=10, hostname="primary", port=5432, max_connections=100, comment="primary" },
+    { hostgroup=20, hostname="replica", port=5432, max_connections=100, comment="replica" }
+)
+
+pgsql_users=
+(
+    { username="appuser", password="appuser", default_hostgroup=0 },
+    { username="postgres", password="changeme", default_hostgroup=0 }
+)
+
+pgsql_query_rules=
+(
+    {
+        rule_id=1
+        active=1
+        match_pattern="^SELECT .* FOR UPDATE"
+        destination_hostgroup=10
+        apply=1
+    },
+    {
+        rule_id=2
+        active=1
+        match_pattern="^SELECT"
+        destination_hostgroup=20
+        apply=1
+    }
+)

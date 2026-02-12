@@ -1,0 +1,43 @@
+services:
+  primary:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASSWD}
+      - POSTGRESQL_DATABASE=${DB_NAME}
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=${DB_REPL_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${DB_REPL_PASSWD}
+    volumes:
+      - primary_data:/bitnami/postgresql
+      - ./init-primary.sql:/docker-entrypoint-initdb.d/00init.sql
+      - ./init-demo-setup.sql:/docker-entrypoint-initdb.d/01demo.sql
+
+  replica:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_MASTER_HOST=primary
+      - POSTGRESQL_MASTER_PORT_NUMBER=${DB_PORT}
+      - POSTGRESQL_REPLICATION_USER=${DB_REPL_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${DB_REPL_PASSWD}
+      - POSTGRESQL_PASSWORD=${DB_PASSWD}
+    volumes:
+      - replica_data:/bitnami/postgresql
+    depends_on:
+      - primary
+
+  proxysql:
+    image: proxysql/proxysql:3
+    volumes:
+      - ./proxysql.cnf:/etc/proxysql.cnf
+    ports:
+      - "6133:6133"   # PostgreSQL traffic
+      - "6132:6132"   # Admin interface
+    depends_on:
+      - primary
+      - replica
+
+volumes:
+  primary_data:
+  replica_data:

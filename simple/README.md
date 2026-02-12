@@ -8,7 +8,6 @@
 
 ## Launch
 
-We launch a stock PostgreSQL container.
 
 ```
 source .envrc           # Or use direnv

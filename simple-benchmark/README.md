@@ -11,6 +11,7 @@ We launch a stock PostgreSQL container and a second container that is running `s
 
 ```
 source .envrc           # Or use direnv
+docker compose build
 docker compose up -d
 ```
 
