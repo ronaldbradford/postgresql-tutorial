@@ -1,13 +1,19 @@
 # Simple Single PostgreSQL environment
 
-## Pre-requisites
-- Docker (or compatible product, e.g. Rancher)
-- Docker Compose
-- `psql` client
+## Tutorial Outcomes
+1. Validate your Docker setup
+2. Launch a single PostgreSQL instance
+3. Connect to and verify connectivity
 
+## Pre-requisites
+- [Docker](https://docs.docker.com/desktop/) (or compatible Docker product, e.g. [Rancher](https://rancherdesktop.io/))
+- Docker Compose
+- `psql` client (Optional)
 
 ## Launch
 
+This tutorial will launch a single PostgreSQL server to validate your environment setup for subsequent tutorials.
+This repeats the same steps as the `simple-benchmark` tutorial but demonstrates that with `proxysql` you can active higher connections using connection pooling.
 
 ```
 source .envrc           # Or use direnv
@@ -47,7 +53,7 @@ docker compose down -v
 
 ## Debugging
 
-The following are example of the output you should expect when running this tutorial.
+The following is example of the output you should expect when running commands in this tutorial.
 ```
 $ docker compose up -d
 [+] Running 3/3
