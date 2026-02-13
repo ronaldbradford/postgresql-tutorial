@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -o pipefail
 set -e
-
 [[ -n "${TRACE}" ]] && set -x
 
 # Source the environment variables for this setup

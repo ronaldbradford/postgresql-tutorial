@@ -1,13 +1,22 @@
 # Simple Single PostgreSQL environment with Benchmark
 
+## Tutorial Outcomes
+1. Launch a single PostgreSQL instance
+2. Launch a benchmark instance
+3. Demostrate a SQL workload with the database
+
+## Definitions
+
+-  **Sysbench** is an open-source, multi-threaded, and modular benchmarking tool used to evaluate system performance. [sysbench](https://github.com/akopytov/sysbench)
+
 ## Pre-requisites
-- Docker (or compatible product, e.g. Rancher)
+- [Docker](https://docs.docker.com/desktop/) (or compatible Docker product, e.g. [Rancher](https://rancherdesktop.io/))
 - Docker Compose
-- `psql` client
+- `psql` client (Optional)
 
 ## Launch
 
-We launch a stock PostgreSQL container and a second container that is running `sysbench`.
+We launch a stock PostgreSQL container (See the [simple](../simple) tutorial) and a second container that is running `sysbench`.
 
 ```
 source .envrc           # Or use direnv
@@ -31,120 +40,122 @@ This tutorial demonstrates benchmarking via [sysbench](https://github.com/akopyt
 
 There is a one-off prepare stage that will pre-populate the database with necessary data to perform the test.
 ```
-TIME=10 ./benchmark.sh prepare
+./benchmark.sh prepare
 TIME=10 ./benchmark.sh run
 ```
 
-You will see results like:
+You will see results like the following which runs 4 threads (default) for 10 seconds:
 ```
 SQL statistics:
     queries performed:
-        read:                            161126
-        write:                           46022
-        other:                           23026
-        total:                           230174
-    transactions:                        11506  (1149.23 per sec.)
-    queries:                             230174 (22990.00 per sec.)
-    ignored errors:                      3      (0.30 per sec.)
+        read:                            532154
+        write:                           151989
+        other:                           76049
+        total:                           760192
+    transactions:                        37997  (3797.14 per sec.)
+    queries:                             760192 (75967.93 per sec.)
+    ignored errors:                      14     (1.40 per sec.)
     reconnects:                          0      (0.00 per sec.)
 
 General statistics:
-    total time:                          10.0111s
-    total number of events:              11506
+    total time:                          10.0064s
+    total number of events:              37997
 
 Latency (ms):
-         min:                                    0.75
-         avg:                                    3.47
-         max:                                   67.27
-         95th percentile:                        5.18
-         sum:                                39977.07
+         min:                                    0.37
+         avg:                                    1.05
+         max:                                   35.71
+         95th percentile:                        1.52
+         sum:                                39996.38
 
 Threads fairness:
-    events (avg/stddev):           2876.5000/111.61
-    execution time (avg/stddev):   9.9943/0.00
+    events (avg/stddev):           9499.2500/611.30
+    execution time (avg/stddev):   9.9991/0.00
 ```
 
 ### Benchmark (10 Threads)
 
-This will run the benchmark with 10 threads.
+This will run the benchmark with 10 threads for 10 seconds.
 ```
 THREADS=10 TIME=10 ./benchmark.sh run
 ```
 
-You will see results with different throughput.
+You will see results with different a throughput. This may be higher or lower depending on your machine capabilities and docker resource configuration. In this example, the first test produced `75967` statements per second with an average of `1.05` milliseconds, in this example the test produced `76823` statements per second with an average of `2.60` milliseconds.
 
 ```
 SQL statistics:
     queries performed:
-        read:                            145684
-        write:                           41568
-        other:                           20841
-        total:                           208093
-    transactions:                        10393  (1000.89 per sec.)
-    queries:                             208093 (20040.14 per sec.)
-    ignored errors:                      13     (1.25 per sec.)
+        read:                            538286
+        write:                           153621
+        other:                           76989
+        total:                           768896
+    transactions:                        38407  (3837.39 per sec.)
+    queries:                             768896 (76823.37 per sec.)
+    ignored errors:                      42     (4.20 per sec.)
     reconnects:                          0      (0.00 per sec.)
 
 General statistics:
-    total time:                          10.3829s
-    total number of events:              10393
+    total time:                          10.0083s
+    total number of events:              38407
 
 Latency (ms):
-         min:                                    0.86
-         avg:                                    9.97
-         max:                                 1024.21
-         95th percentile:                       14.73
-         sum:                               103623.24
+         min:                                    0.46
+         avg:                                    2.60
+         max:                                   23.63
+         95th percentile:                        3.62
+         sum:                               100023.38
 
 Threads fairness:
-    events (avg/stddev):           1039.3000/62.43
-    execution time (avg/stddev):   10.3623/0.01
+    events (avg/stddev):           3840.7000/65.08
+    execution time (avg/stddev):   10.0023/0.00
 ```
+
+NOTE: For more realistic benchmarking you would run tests for a long duration, and you would run multiple iterations of the same test to average out any external factors.
 
 ### Benchmark (20 Threads)
 
-This will run the benchmark with 20 threads.
+This will run the same benchmark with 20 threads.
 ```
 THREADS=20 TIME=10 ./benchmark.sh run
 ```
 
-You will see results with likely decreased throughput (due to limited cores in docker)
+You will see results with likely decreased throughput (due to limited cores in your machine). This test produced `67698` statements per second with an average of `5.92` milliseconds.
 
 ```
-SQL statistics:
-    queries performed:
-        read:                            125440
-        write:                           35729
-        other:                           17977
-        total:                           179146
-    transactions:                        8933   (889.20 per sec.)
-    queries:                             179146 (17832.32 per sec.)
-    ignored errors:                      27     (2.69 per sec.)
-    reconnects:                          0      (0.00 per sec.)
-
-General statistics:
-    total time:                          10.0455s
-    total number of events:              8933
-
-Latency (ms):
-         min:                                    1.13
-         avg:                                   22.43
-         max:                                  231.83
-         95th percentile:                       44.17
-         sum:                               200408.42
-
-Threads fairness:
-    events (avg/stddev):           446.6500/11.01
-    execution time (avg/stddev):   10.0204/0.01
+    SQL statistics:
+        queries performed:
+            read:                            474628
+            write:                           135279
+            other:                           67969
+            total:                           677876
+        transactions:                        33820  (3377.55 per sec.)
+        queries:                             677876 (67698.44 per sec.)
+        ignored errors:                      82     (8.19 per sec.)
+        reconnects:                          0      (0.00 per sec.)
+    
+    General statistics:
+        total time:                          10.0128s
+        total number of events:              33820
+    
+    Latency (ms):
+             min:                                    0.67
+             avg:                                    5.92
+             max:                                   79.49
+             95th percentile:                        7.84
+             sum:                               200086.45
+    
+    Threads fairness:
+        events (avg/stddev):           1691.0000/18.43
+        execution time (avg/stddev):   10.0043/0.00
 ```
 
 
 ### Benchmark (25 Threads)
 
-This benchmark will fail as the number of threads exceeds the maximum connections to the database, as expected and is the purpose of subsequent tutorials.
+This benchmark will fail as the number of threads exceeds the maximum connections to the database. This is expected and is the purpose of demostrating subsequent tutorials.
 
 ```
-$ THREADS=25 TIME=10 ./benchmark.sh run
+THREADS=25 TIME=10 ./benchmark.sh run
 ```
 
 ```
@@ -212,10 +223,14 @@ connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  sorry
 ```
 
 ## Teardown
+
+When you are finished with this tutorial remove all containers as subsequent tutorials utilize some of the same resources and ports.
+
 ```
 docker compose down -v
 ```
 
+---
 ## Debugging
 ```
 
