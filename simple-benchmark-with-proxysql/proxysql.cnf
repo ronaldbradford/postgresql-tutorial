@@ -25,14 +25,17 @@ pgsql_variables=
     commands_stats=true
 }
 
-postgres_servers =
+pgsql_servers =
 (
+    { hostgroup=10, hostname="postgresql18-simple-benchmark", port=5432, max_connections=15, comment="primary" }
 )
 
-postgres_users:
+pgsql_users  =
 (
+    { username="appuser", password="appuser", default_hostgroup=10 },
+    { username="postgres", password="changeme", default_hostgroup=10 }
 )
 
-postgres_query_rules:
+pgsql_query_rules =
 (
 )
